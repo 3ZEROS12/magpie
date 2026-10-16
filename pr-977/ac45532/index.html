@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>#977 界面预览 · ac45532</title>
+<style>:root{color-scheme:light dark;--bg:#f6f6f7;--fg:#1d1d1f;--muted:#6e6e73;--card:#fff;--line:#e5e5ea}
+@media (prefers-color-scheme:dark){:root{--bg:#111113;--fg:#f2f2f4;--muted:#9a9aa0;--card:#1c1c1f;--line:#2c2c30}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,"Segoe UI","PingFang SC","Noto Sans CJK SC",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:28px 16px 60px}h1{font-size:20px;margin:0 0 4px}.m{color:var(--muted);font-size:13px;margin:0 0 20px}
+video,img{display:block;width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card)}figure{margin:0 0 28px}figcaption{color:var(--muted);font-size:13px;margin-top:8px}
+a{color:inherit}</style>
+<main><h1>#977 界面预览</h1><p class="m">commit ac45532 · <a href="https://github.com/yetone/magpie/pull/977">回到 PR</a> · 用量页的每个额度窗口和托盘面板的「额度」标签上，各加了一行「额度结语」：撑得到重置（带余量倍数，带「历史」标记时表示按该窗口的历史趋势而非匀速推算）、「…后用完」或「已用完」，数字由后端按窗口自身的读数算出，前端只负责翻译与排布。</p>
+<figure><video src="preview.mp4" controls autoplay muted playsinline poster="poster.png"></video><figcaption>红线是鼠标走过的轨迹，红色圆环是一次点击；底部文字是这一步在做什么。空格暂停，← → 逐段查看。</figcaption></figure>
+<figure><img src="01-usage-codex-verdicts.png" alt="用量页 Codex 卡片：每个额度窗口重置行下方的结语行"><figcaption>用量页的额度结语 · 用量页 Codex 卡片：每个额度窗口重置行下方的结语行</figcaption></figure>
+<figure><img src="02-usage-relay-card.png" alt="同一页的 Sub2API Relay 卡片"><figcaption>用量页的额度结语 · 同一页的 Sub2API Relay 卡片</figcaption></figure>
+<figure><img src="03-panel-usage-verdicts.png" alt="托盘「额度」标签：卡片上每个窗口一行的结语"><figcaption>托盘面板上的额度结语 · 托盘「额度」标签：卡片上每个窗口一行的结语</figcaption></figure>
+</main></html>
