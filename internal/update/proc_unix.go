@@ -39,3 +39,8 @@ func Reexec(exe string, args, env []string) error {
 
 // trialStart: nothing here refuses a build that downloaded whole.
 func trialStart(string) error { return nil }
+
+// currentExe returns the path to the running executable.
+func currentExe() (string, error) {
+	return os.Executable()
+}

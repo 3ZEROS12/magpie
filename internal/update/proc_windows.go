@@ -1,9 +1,11 @@
 package update
 
 import (
+	"errors"
 	"os"
 	"os/exec"
 	"syscall"
+	"unsafe"
 
 	"github.com/yetone/magpie/internal/proc"
 )
@@ -16,6 +18,60 @@ const (
 	suspended    = 0x00000004
 	noWindow     = 0x08000000
 )
+
+var (
+	procQueryFullProcessImageName = syscall.NewLazyDLL("kernel32.dll").NewProc("QueryFullProcessImageNameW")
+	procGetCurrentProcess         = syscall.NewLazyDLL("kernel32.dll").NewProc("GetCurrentProcess")
+)
+
+// currentExe returns the path to the running executable.
+// On Windows, if a running binary was moved or renamed to another folder on the
+// same NTFS volume, os.Executable() (which calls GetModuleFileName) continues to
+// return the stale launch path recorded in the PEB. When that file no longer
+// exists on disk, QueryFullProcessImageName queries the kernel for the live image path.
+func currentExe() (string, error) {
+	exe, err := os.Executable()
+	if err == nil {
+		if _, statErr := os.Stat(exe); statErr == nil {
+			return exe, nil
+		}
+	}
+	if live, liveErr := queryLiveExe(); liveErr == nil {
+		if _, statErr := os.Stat(live); statErr == nil {
+			return live, nil
+		}
+	}
+	return exe, err
+}
+
+func queryLiveExe() (string, error) {
+	h, _, _ := procGetCurrentProcess.Call()
+	if h == 0 {
+		return "", syscall.GetLastError()
+	}
+	return queryProcessExe(syscall.Handle(h))
+}
+
+func queryProcessExe(h syscall.Handle) (string, error) {
+	b := make([]uint16, syscall.MAX_PATH)
+	for {
+		size := uint32(len(b))
+		r1, _, err := procQueryFullProcessImageName.Call(
+			uintptr(h),
+			0,
+			uintptr(unsafe.Pointer(&b[0])),
+			uintptr(unsafe.Pointer(&size)),
+		)
+		if r1 == 0 {
+			if errors.Is(err, syscall.ERROR_INSUFFICIENT_BUFFER) && len(b) < 32768 {
+				b = make([]uint16, len(b)*2)
+				continue
+			}
+			return "", err
+		}
+		return syscall.UTF16ToString(b[:size]), nil
+	}
+}
 
 // alive reports whether pid is still running.
 func alive(pid int) bool {

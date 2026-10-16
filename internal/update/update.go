@@ -236,7 +236,7 @@ func Homebrew(exe string) bool {
 
 // Executable is the running binary, symlinks resolved.
 func Executable() (string, error) {
-	exe, err := os.Executable()
+	exe, err := currentExe()
 	if err != nil {
 		return "", err
 	}
